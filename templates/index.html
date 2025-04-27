@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis</title>
+</head>
+<body>
+    <h1>Sentiment Analysis</h1>
+    <form method="POST" action="/predict">
+        <label for="text">Enter text:</label><br>
+        <textarea name="text" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Predict">
+    </form>
+    <div id="result" style="display:none;">
+        <h2>Result:</h2>
+        <p id="sentiment"></p>
+        <p>Input Text: <span id="input_text"></span></p>
+    </div>
+    
+    <script>
+        // JavaScript to handle the form submission and display the sentiment result
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting in the traditional way
+
+            // Get the user-entered text
+            var inputText = document.querySelector('textarea').value;
+
+            // Send an AJAX request to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/predict', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var sentiment = response.sentiment;
+
+                    // Update the result elements
+                    document.getElementById('sentiment').textContent = sentiment;
+                    document.getElementById('input_text').textContent = inputText;
+
+                    // Show the result
+                    document.getElementById('result').style.display = 'block';
+                }
+            };
+
+            xhr.send('text=' + inputText);
+        });
+    </script>
+</body>
+</html>
